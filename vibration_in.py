@@ -2,16 +2,6 @@
 import os
 import sys
 
-#엑셀 저장을 위한 모듈 임포트
-import openpyxl
-
-wb = openpyxl.Workbook()
-
-ws = wb.create_sheet('진동센서 동작')
-ws['A1'] = '알람 발생'
-
-wb.save('vibration.xlsx')
-
 #모드버스 호출 임포트
 from pymodbus.client import ModbusTcpClient
 from pymodbus.transaction import *
@@ -21,13 +11,66 @@ from pymodbus.payload import BinaryPayloadDecoder
 from datetime import datetime
 import time
 
+#엑셀 저장을 위한 모듈 임포트
+from openpyxl import load_workbook
+import pandas as pd
+
+def excel_save(line):
+        file_name = 'vibration.xlsx'
+
+        wb = load_workbook(file_name)
+
+        data = wb.active
+
+        last_num = data['A1'].value
+
+        new_num = last_num+1
+        data['A1'] = new_num
+# print (last_num)
+# print(data['A'+str(last_num)].value)
+# print(data['A3'].value)
+#wb = openpyxl.Workbook()
+
+# ws = wb.create_sheet('진동센서 동작')
+        data['A'+str(last_num)] = line_list[line]
+        data['B'+str(last_num)] = now.strftime('%Y-%m-%d %H:%M:%S')
+
+        wb.save('vibration.xlsx')
+
+
+
+
+
+
 #호기 배열 생성
-line_list = ['V151 수평존 RC팬','V151 수직상 RC팬'
+line_list = ['V151 진공펌프_진동HI발생',
+             'V151 2층 RC FAN 진동HI발생',
+             'V151 3층 RC FAN 진동HI발생',
+             'V151 4층 RC FAN 진동HI발생',
+             'V151 5층 RC FAN 진동HI발생',
+             'V151 6층 RC FAN 진동HI발생',   
+             'V151 7층 RC FAN 진동HI발생',
+             'V151 6층돌출 RC FAN 진동HI발생',
+             'V152 진공펌프_진동HI발생',   
+             'V151 2층 RC FAN 진동HI발생',
+             'V152 3층 RC FAN 진동HI발생', 
+             'V152 4층 RC FAN 진동HI발생',
+             'V201 진공펌프_진동HI발생',   
+             'V201 2층 RC FAN 진동HI발생',
+             'V201 3층 RC FAN 진동HI발생',
+             'V201 4층 RC FAN 진동HI발생',
+             'V202 진공펌프_진동HI발생',  
+             'V202 2층 RC FAN 진동HI발생',  
+             'V202 3층 RC FAN 진동HI발생',
+             'V202 4층 RC FAN 진동HI발생',
+                                       
+             
+
              ]
 
 
-now = datetime.now()
-os.system("cls")
+
+#os.system("cls")
 client = ModbusTcpClient('172.16.3.158',502)
 
 client.connect
@@ -46,8 +89,10 @@ while True:
                 if(first_result != arr_result):
                     first_result = arr_result
 
-                #print(arr_result.index(1))
+                    #print(arr_result.index(1))
+                    now = datetime.now()
                     print(arr_result , now.strftime('%Y-%m-%d %H:%M:%S'))
+                    excel_save(arr_result.index(1))
 
         else:
                first_result = arr_result
