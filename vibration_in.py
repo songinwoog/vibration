@@ -2,6 +2,10 @@
 import os
 import sys
 
+#엑셀 저장 임포트
+
+
+#모드버스 호출 임포트
 from pymodbus.client import ModbusTcpClient
 from pymodbus.transaction import *
 from pymodbus.payload import Endian
@@ -9,6 +13,11 @@ from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.payload import BinaryPayloadDecoder
 from datetime import datetime
 import time
+
+#호기 배열 생성
+line_list = ['V151 수평존 RC팬','V151 수직상 RC팬'
+             ]
+
 
 now = datetime.now()
 os.system("cls")
