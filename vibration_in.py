@@ -2,8 +2,15 @@
 import os
 import sys
 
+#엑셀 저장을 위한 모듈 임포트
+import openpyxl
 
+wb = openpyxl.Workbook()
 
+ws = wb.create_sheet('진동센서 동작')
+ws['A1'] = '알람 발생'
+
+wb.save('vibration.xlsx')
 
 #모드버스 호출 임포트
 from pymodbus.client import ModbusTcpClient
