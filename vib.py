@@ -11,32 +11,39 @@ from pymodbus.payload import BinaryPayloadDecoder
 from datetime import datetime
 import time
 
+import warnings
+
+
 #엑셀 저장을 위한 모듈 임포트
 from openpyxl import load_workbook
 import pandas as pd
 
+warnings.filterwarnings(action='ignore')
+
 def excel_save(line):
         file_name = 'vibration.xlsx'
 
-        wb = load_workbook(file_name)
+        try:
+                wb = load_workbook(file_name)
 
-        data = wb.active
+                data = wb.active
 
-        last_num = data['A1'].value
+                last_num = data['A1'].value
 
-        new_num = last_num+1
-        data['A1'] = new_num
+                new_num = last_num+1
+                data['A1'] = new_num
 # print (last_num)
 # print(data['A'+str(last_num)].value)
 # print(data['A3'].value)
 #wb = openpyxl.Workbook()
 
 # ws = wb.create_sheet('진동센서 동작')
-        data['A'+str(last_num)] = line_list[line]
-        data['B'+str(last_num)] = now.strftime('%Y-%m-%d %H:%M:%S')
-
-        wb.save('vibration.xlsx')
-
+                data['A'+str(last_num)] = line_list[line]
+                data['B'+str(last_num)] = now.strftime('%Y-%m-%d %H:%M:%S')
+                wb.save('vibration.xlsx')
+        except Exception as e:
+                #print(e)
+                print('저장 오류...! -> 파일이 열려있거나 존재 하지 않습니다.')
 
 
 
